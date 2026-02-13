@@ -119,17 +119,19 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
         <aside className="flex w-[384px] flex-shrink-0 flex-col border-r border-gray-200 bg-white p-6">
           <div className="flex items-center gap-3">
             {logoError ? (
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-green">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-green">
                 <span className="text-sm font-bold text-white">B</span>
               </div>
             ) : (
-              // eslint-disable-next-line @next/next/no-img-element -- dynamic fallback with onError
-              <img
-                src={LOGO_SRC}
-                alt="Bloom"
-                className="h-10 w-10 shrink-0 rounded-full object-cover"
-                onError={() => setLogoError(true)}
-              />
+              <div className="flex h-12 w-12 shrink-0 overflow-hidden rounded-full">
+                {/* eslint-disable-next-line @next/next/no-img-element -- dynamic fallback with onError */}
+                <img
+                  src={LOGO_SRC}
+                  alt="Bloom"
+                  className="h-full w-full object-contain"
+                  onError={() => setLogoError(true)}
+                />
+              </div>
             )}
             <div>
               <p className="font-semibold text-figma-primary">Bloom Nutrition</p>
@@ -266,6 +268,51 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
                   </svg>
                 </button>
 
+                {selectedStep === 1 && !stepsExpanded && (() => {
+                  const arrivesToday = TIMELINE_STEPS[TIMELINE_STEPS.length - 1];
+                  return (
+                    <div className="border-t border-gray-200 px-4 pb-4 pt-2" style={{ backgroundColor: "#F8FAFB" }}>
+                      <div className="flex items-center gap-3">
+                        <div className="relative z-10 flex flex-col items-center">
+                          <div
+                            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full"
+                            style={{ backgroundColor: "#10b981" }}
+                          >
+                            <svg
+                              width={14}
+                              height={14}
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="white"
+                              strokeWidth={2.5}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div
+                          className="flex min-w-0 flex-1 items-center gap-3 overflow-hidden rounded-xl border-2 border-brand-green bg-white px-4 py-3"
+                          style={{ borderColor: "#10b981" }}
+                        >
+                          <IconContainer>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={arrivesToday.iconSrc} alt={arrivesToday.title} className="h-full w-full object-contain" />
+                          </IconContainer>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold leading-snug" style={{ color: "#000000" }}>
+                              {arrivesToday.title}
+                            </p>
+                            <p className="text-sm leading-snug" style={{ color: MUTED_GRAY }}>
+                              {arrivesToday.subtitle}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
                 {selectedStep === 1 && stepsExpanded && (
                   <div className="relative border-t border-gray-200 px-4 pb-4 pt-2" style={{ backgroundColor: "#F8FAFB" }}>
                     {/* Vertical connector line - rgba(0,0,0,0.2), aligns with 24px circle centers */}
@@ -353,6 +400,15 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
                     onFormChange={(updates) => setStep3FormState((prev) => ({ ...prev, ...updates }))}
                   />
                 )
+              ) : selectedStep === 4 ? (
+                <div className="flex flex-col items-center justify-center rounded-2xl p-6 text-center" style={{ backgroundColor: "#FFFFFF", borderRadius: 16 }}>
+                  <h3 className="text-lg font-bold text-figma-primary">Coming soon 🚀</h3>
+                  <p className="mt-2 text-sm text-figma-secondary">
+                    This section is still being built.
+                    <br />
+                    Stay tuned — it&apos;ll be available in an upcoming release.
+                  </p>
+                </div>
               ) : (
                 <div className="rounded-2xl p-6" style={{ backgroundColor: "#F8FAFB", borderRadius: 16 }}>
                   <p className="text-figma-secondary">Placeholder content for step {selectedStep}</p>
