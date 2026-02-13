@@ -12,6 +12,7 @@ export default function HomePage() {
       className="relative flex min-h-screen w-full justify-center"
       style={{ minHeight: "100vh" }}
     >
+      <h1>Hello World</h1>
       {/* Scrollable content area - extends to fit modal + top margin */}
       <div
         className="relative flex w-[1440px] flex-col items-center"
