@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Step2Content, type Step2File } from "./Step2Content";
 import { Step2SummaryContent } from "./Step2SummaryContent";
 import { Step3Content } from "./Step3Content";
@@ -65,7 +65,10 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
   const [selectedStep, setSelectedStep] = useState(2);
   const [stepsExpanded, setStepsExpanded] = useState(true);
   const [logoError, setLogoError] = useState(false);
-  const [orderId] = useState(() => Math.floor(1000000 + Math.random() * 9000000));
+  const [orderId, setOrderId] = useState<string>("");
+  useEffect(() => {
+    setOrderId(String(Math.floor(1000000 + Math.random() * 9000000)));
+  }, []);
   const [step2Files, setStep2Files] = useState<Step2File[]>([]);
   const [step2Message, setStep2Message] = useState("");
   const [step2State, setStep2State] = useState<"upload" | "summary">("upload");
@@ -106,7 +109,7 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
           Reception and Usage Verification
         </h2>
         <p className="flex-1 text-right text-sm" style={{ color: MUTED_GRAY }}>
-          Training for 4K order #{orderId}
+          Training for 4K order #{orderId || "…"}
         </p>
         <button
           type="button"
