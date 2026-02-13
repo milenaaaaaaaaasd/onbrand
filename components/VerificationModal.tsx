@@ -79,9 +79,10 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="grid w-[1200px] rounded-2xl bg-white"
+      className="grid w-[1200px] overflow-hidden rounded-2xl bg-white"
       style={{
         height: 864,
+        maxHeight: "calc(100vh - 2rem)",
         boxShadow: "0 24px 48px -12px rgba(0,0,0,0.18), 0 0 2px rgba(0,0,0,0.05)",
         gridTemplateRows: "auto 1fr auto",
         gridTemplateAreas: "'header' 'body' 'footer'",
@@ -115,8 +116,8 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
         style={{ gridArea: "body", minHeight: 0, overflow: "hidden" }}
         className="flex"
       >
-        {/* Left column - 384px so "Feedback for the brand" + Optional chip fit on one line */}
-        <aside className="flex w-[384px] flex-shrink-0 flex-col border-r border-gray-200 bg-white p-6">
+        {/* Left column - 384px, no scroll */}
+        <aside className="flex w-[384px] min-h-0 flex-shrink-0 flex-col overflow-hidden border-r border-gray-200 bg-white p-6">
           <div className="flex items-center gap-3">
             {logoError ? (
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-green">
@@ -212,10 +213,10 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
 
         {/* Right column - scrollable content only */}
         <div
-          className="flex min-w-0 flex-1 flex-col overflow-hidden"
+          className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
           style={{ backgroundColor: "#F3F6F8" }}
         >
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-6">
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pt-6 pb-8">
             <div
               className={`rounded-2xl p-6 ${selectedStep === 2 && step2State === "summary" ? "flex min-h-full flex-col" : ""}`}
               style={{ backgroundColor: "#FFFFFF", borderRadius: 16 }}
