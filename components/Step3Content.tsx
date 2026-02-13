@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import type { Step3FormState } from "./Step3SummaryContent";
 
 const MUTED_GRAY = "#637381";
 
@@ -71,15 +71,34 @@ function YesNoToggle({
   );
 }
 
-export function Step3Content() {
-  const [productRating, setProductRating] = useState<number>(0);
-  const [productUse, setProductUse] = useState<string | null>("Personal use");
-  const [productOpinion, setProductOpinion] = useState("");
-  const [tasteRating, setTasteRating] = useState<number>(0);
-  const [loveBrand, setLoveBrand] = useState<"yes" | "no" | null>(null);
-  const [firstTime, setFirstTime] = useState<"yes" | "no" | null>(null);
-  const [snowboardUse, setSnowboardUse] = useState<string | null>("Ski Station");
-  const [snowboardFeel, setSnowboardFeel] = useState("");
+export const DEFAULT_STEP3_FORM: Step3FormState = {
+  productRating: 0,
+  productUse: null,
+  productOpinion: "",
+  tasteRating: 0,
+  loveBrand: null,
+  firstTime: null,
+  snowboardUse: null,
+  snowboardFeel: "",
+};
+
+export function Step3Content({
+  formState,
+  onFormChange,
+}: {
+  formState: Step3FormState;
+  onFormChange: (updates: Partial<Step3FormState>) => void;
+}) {
+  const {
+    productRating,
+    productUse,
+    productOpinion,
+    tasteRating,
+    loveBrand,
+    firstTime,
+    snowboardUse,
+    snowboardFeel,
+  } = formState;
 
   const productUseOptions = [
     "Personal use",
@@ -122,7 +141,7 @@ export function Step3Content() {
                 <button
                   key={n}
                   type="button"
-                  onClick={() => setProductRating(n)}
+                  onClick={() => onFormChange({ productRating: n })}
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg transition-colors"
                   style={{ backgroundColor: "#E8EFFD" }}
                   aria-label={`Rate ${n} stars`}
@@ -146,7 +165,7 @@ export function Step3Content() {
                   key={opt}
                   label={opt}
                   selected={productUse === opt}
-                  onClick={() => setProductUse(opt)}
+                  onClick={() => onFormChange({ productUse: opt })}
                 />
               ))}
             </div>
@@ -161,7 +180,7 @@ export function Step3Content() {
             </label>
             <textarea
               value={productOpinion}
-              onChange={(e) => setProductOpinion(e.target.value)}
+              onChange={(e) => onFormChange({ productOpinion: e.target.value })}
               placeholder="Click to write..."
               rows={4}
               className="mt-2 w-full resize-y rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-figma-primary placeholder:text-figma-secondary focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green"
@@ -184,7 +203,7 @@ export function Step3Content() {
                 <button
                   key={n}
                   type="button"
-                  onClick={() => setTasteRating(n)}
+                  onClick={() => onFormChange({ tasteRating: n })}
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg transition-colors"
                   style={{ backgroundColor: "#E8EFFD" }}
                   aria-label={`Rate ${n} stars`}
@@ -203,7 +222,7 @@ export function Step3Content() {
               Do you love my brand?
             </label>
             <div className="shrink-0">
-              <YesNoToggle value={loveBrand} onChange={setLoveBrand} />
+              <YesNoToggle value={loveBrand} onChange={(v) => onFormChange({ loveBrand: v })} />
             </div>
           </div>
 
@@ -215,7 +234,7 @@ export function Step3Content() {
               Is this your first time drinking it?
             </label>
             <div className="shrink-0">
-              <YesNoToggle value={firstTime} onChange={setFirstTime} />
+              <YesNoToggle value={firstTime} onChange={(v) => onFormChange({ firstTime: v })} />
             </div>
           </div>
         </div>
@@ -249,7 +268,7 @@ export function Step3Content() {
                   key={opt}
                   label={opt}
                   selected={snowboardUse === opt}
-                  onClick={() => setSnowboardUse(opt)}
+                  onClick={() => onFormChange({ snowboardUse: opt })}
                 />
               ))}
             </div>
@@ -264,7 +283,7 @@ export function Step3Content() {
             </label>
             <textarea
               value={snowboardFeel}
-              onChange={(e) => setSnowboardFeel(e.target.value)}
+              onChange={(e) => onFormChange({ snowboardFeel: e.target.value })}
               placeholder="Click to write..."
               rows={4}
               className="mt-2 w-full resize-y rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-figma-primary placeholder:text-figma-secondary focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green"

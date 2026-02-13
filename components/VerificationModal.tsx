@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { Step2Content, type Step2File } from "./Step2Content";
 import { Step2SummaryContent } from "./Step2SummaryContent";
-import { Step3Content } from "./Step3Content";
+import { DEFAULT_STEP3_FORM, Step3Content } from "./Step3Content";
+import { Step3SummaryContent } from "./Step3SummaryContent";
 
 const STEPS = [
   { id: 1, title: "Products Shipment", subtitle: "Arrive today", completedStatus: "Delivered 22 January 2026" },
@@ -52,6 +53,8 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
   const [step2CompletedViaExemption] = useState(false);
   const [, setStep3Skipped] = useState(false);
   const [shipmentIconError, setShipmentIconError] = useState(false);
+  const [step3FormState, setStep3FormState] = useState(DEFAULT_STEP3_FORM);
+  const [step3State, setStep3State] = useState<"form" | "summary">("form");
   useEffect(() => {
     setOrderId(String(Math.floor(1000000 + Math.random() * 9000000)));
   }, []);
@@ -60,8 +63,12 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
       setStep2State("summary");
     } else if (selectedStep === 2 && step2State === "summary") {
       setSelectedStep(3);
-    } else if (selectedStep === 3) {
+    } else if (selectedStep === 3 && step3State === "form") {
+      setStep3State("summary");
+    } else if (selectedStep === 3 && step3State === "summary") {
       setSelectedStep(4);
+    } else if (selectedStep === 4) {
+      // placeholder for step 4
     }
   };
 
@@ -338,7 +345,14 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
                   />
                 )
               ) : selectedStep === 3 ? (
-                <Step3Content />
+                step3State === "summary" ? (
+                  <Step3SummaryContent formState={step3FormState} />
+                ) : (
+                  <Step3Content
+                    formState={step3FormState}
+                    onFormChange={(updates) => setStep3FormState((prev) => ({ ...prev, ...updates }))}
+                  />
+                )
               ) : (
                 <div className="rounded-2xl p-6" style={{ backgroundColor: "#F8FAFB", borderRadius: 16 }}>
                   <p className="text-figma-secondary">Placeholder content for step {selectedStep}</p>
@@ -368,17 +382,26 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
       >
         <button
           type="button"
-          disabled={selectedStep === 2 && step2State === "upload" && step2Files.length === 0}
+          disabled={
+            (selectedStep === 2 && step2State === "upload" && step2Files.length === 0) ||
+            (selectedStep === 3 &&
+              step3State === "form" &&
+              (step3FormState.productRating === 0 || step3FormState.productUse === null))
+          }
           onClick={
             (selectedStep === 2 && (step2State === "upload" || step2State === "summary")) ||
-            selectedStep === 3
+            selectedStep === 3 ||
+            selectedStep === 4
               ? handleFooterCta
               : undefined
           }
           className="w-full rounded-lg py-3 font-bold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60 hover:opacity-90 disabled:hover:opacity-60"
           style={{
             backgroundColor:
-              selectedStep === 2 && step2State === "upload" && step2Files.length === 0
+              (selectedStep === 2 && step2State === "upload" && step2Files.length === 0) ||
+              (selectedStep === 3 &&
+                step3State === "form" &&
+                (step3FormState.productRating === 0 || step3FormState.productUse === null))
                 ? "#9ca3af"
                 : "#1c252e",
           }}
@@ -387,11 +410,11 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
             ? "Upload photos and you'll be able to submit"
             : selectedStep === 2 && step2State === "upload"
               ? "Submit photos"
-              : selectedStep === 3
+              : selectedStep === 3 && step3State === "form"
                 ? "Submit feedback & continue"
                 : "Continue to next stage"}
         </button>
-        {selectedStep === 3 && (
+        {selectedStep === 3 && step3State === "form" && (
           <button
             type="button"
             onClick={handleStep3Skip}
