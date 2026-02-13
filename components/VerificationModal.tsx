@@ -84,8 +84,8 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
         height: 864,
         maxHeight: "calc(100vh - 2rem)",
         boxShadow: "0 24px 48px -12px rgba(0,0,0,0.18), 0 0 2px rgba(0,0,0,0.05)",
-        gridTemplateRows: "auto 1fr auto",
-        gridTemplateAreas: "'header' 'body' 'footer'",
+        gridTemplateRows: "auto 1fr",
+        gridTemplateAreas: "'header' 'body'",
       }}
     >
       {/* PART 1: Header - fixed row, NEVER scrolls */}
@@ -429,58 +429,58 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
               )}
             </div>
           </div>
+
+          {/* Footer - constrained to right panel, same padding as content */}
+          <footer
+            style={{ backgroundColor: "#F3F6F8" }}
+            className="flex flex-shrink-0 flex-col items-center gap-3 border-t border-gray-200 px-6 py-4"
+          >
+            <button
+              type="button"
+              disabled={
+                (selectedStep === 2 && step2State === "upload" && step2Files.length === 0) ||
+                (selectedStep === 3 &&
+                  step3State === "form" &&
+                  (step3FormState.productRating === 0 || step3FormState.productUse === null))
+              }
+              onClick={
+                (selectedStep === 2 && (step2State === "upload" || step2State === "summary")) ||
+                selectedStep === 3 ||
+                selectedStep === 4
+                  ? handleFooterCta
+                  : undefined
+              }
+              className="w-full rounded-lg py-3 font-bold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60 hover:opacity-90 disabled:hover:opacity-60"
+              style={{
+                backgroundColor:
+                  (selectedStep === 2 && step2State === "upload" && step2Files.length === 0) ||
+                  (selectedStep === 3 &&
+                    step3State === "form" &&
+                    (step3FormState.productRating === 0 || step3FormState.productUse === null))
+                    ? "#9ca3af"
+                    : "#1c252e",
+              }}
+            >
+              {selectedStep === 2 && step2State === "upload" && step2Files.length === 0
+                ? "Upload photos and you'll be able to submit"
+                : selectedStep === 2 && step2State === "upload"
+                  ? "Submit photos"
+                  : selectedStep === 3 && step3State === "form"
+                    ? "Submit feedback & continue"
+                    : "Continue to next stage"}
+            </button>
+            {selectedStep === 3 && step3State === "form" && (
+              <button
+                type="button"
+                onClick={handleStep3Skip}
+                className="text-sm font-medium text-figma-secondary hover:text-figma-primary transition-colors"
+              >
+                Skip for now
+              </button>
+            )}
+          </footer>
         </div>
       </div>
-
-      {/* PART 3: Footer - fixed row, NEVER scrolls */}
-      <footer
-        style={{ gridArea: "footer", backgroundColor: "#F3F6F8" }}
-        className="flex flex-shrink-0 flex-col items-center gap-3 border-t border-gray-200 px-8 py-4"
-      >
-        <button
-          type="button"
-          disabled={
-            (selectedStep === 2 && step2State === "upload" && step2Files.length === 0) ||
-            (selectedStep === 3 &&
-              step3State === "form" &&
-              (step3FormState.productRating === 0 || step3FormState.productUse === null))
-          }
-          onClick={
-            (selectedStep === 2 && (step2State === "upload" || step2State === "summary")) ||
-            selectedStep === 3 ||
-            selectedStep === 4
-              ? handleFooterCta
-              : undefined
-          }
-          className="w-full rounded-lg py-3 font-bold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60 hover:opacity-90 disabled:hover:opacity-60"
-          style={{
-            backgroundColor:
-              (selectedStep === 2 && step2State === "upload" && step2Files.length === 0) ||
-              (selectedStep === 3 &&
-                step3State === "form" &&
-                (step3FormState.productRating === 0 || step3FormState.productUse === null))
-                ? "#9ca3af"
-                : "#1c252e",
-          }}
-        >
-          {selectedStep === 2 && step2State === "upload" && step2Files.length === 0
-            ? "Upload photos and you'll be able to submit"
-            : selectedStep === 2 && step2State === "upload"
-              ? "Submit photos"
-              : selectedStep === 3 && step3State === "form"
-                ? "Submit feedback & continue"
-                : "Continue to next stage"}
-        </button>
-        {selectedStep === 3 && step3State === "form" && (
-          <button
-            type="button"
-            onClick={handleStep3Skip}
-            className="text-sm font-medium text-figma-secondary hover:text-figma-primary transition-colors"
-          >
-            Skip for now
-          </button>
-        )}
-      </footer>
     </div>
   );
 }
