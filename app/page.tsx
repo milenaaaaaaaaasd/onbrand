@@ -9,13 +9,12 @@ export default function HomePage() {
 
   return (
     <div
-      className="relative flex min-h-screen w-full justify-center"
-      style={{ minHeight: "100vh" }}
+      className="relative flex h-screen w-full items-center justify-center overflow-hidden"
+      style={{ height: "100vh" }}
     >
-      {/* Scrollable content area - extends to fit modal + top margin */}
+      {/* Background container - fixed, no scroll */}
       <div
-        className="relative flex w-[1440px] flex-col items-center"
-        style={{ minHeight: 928, paddingTop: 32 }}
+        className="relative flex h-full w-[1440px] flex-col items-center justify-center"
       >
         {/* Background - fills content area */}
         <div className="absolute inset-0 -z-10">
