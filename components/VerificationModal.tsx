@@ -261,10 +261,10 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
 
                 {selectedStep === 1 && stepsExpanded && (
                   <div className="relative border-t border-gray-200 px-4 pb-4 pt-2" style={{ backgroundColor: "#F8FAFB" }}>
-                    {/* Vertical connector line - rgba(0,0,0,0.2), matches left nav divider style */}
+                    {/* Vertical connector line - rgba(0,0,0,0.2), aligns with 24px circle centers */}
                     <div
                       className="absolute top-12 bottom-12 w-px"
-                      style={{ left: "31px", backgroundColor: "rgba(0,0,0,0.2)" }}
+                      style={{ left: "28px", backgroundColor: "rgba(0,0,0,0.2)" }}
                       aria-hidden
                     />
                     {TIMELINE_STEPS.map((item) => {
@@ -274,7 +274,7 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
                       <div key={item.title} className="flex items-center gap-3 pb-6 last:pb-0">
                         <div className="relative z-10 flex flex-col items-center">
                           <div
-                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${!isCurrent && !isCompleted ? "bg-gray-300" : ""}`}
+                            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${!isCurrent && !isCompleted ? "bg-gray-300" : ""}`}
                             style={{
                               ...(isCurrent && { backgroundColor: "#10b981" }),
                               ...(isCompleted && !isCurrent && { backgroundColor: "#919EAB" }),
@@ -282,8 +282,8 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
                           >
                             {(isCompleted || isCurrent) && (
                               <svg
-                                width={20}
-                                height={20}
+                                width={14}
+                                height={14}
                                 viewBox="0 0 24 24"
                                 fill="none"
                                 stroke="white"

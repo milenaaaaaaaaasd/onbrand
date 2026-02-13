@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 const MUTED_GRAY = "#637381";
 const ACCEPTED_TYPES = [".jpg", ".jpeg", ".png", ".pdf"];
@@ -51,6 +51,7 @@ export function Step2Content({
   onMessageChange: (value: string) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const addFiles = useCallback(
     (newFiles: FileList | null) => {
@@ -86,6 +87,7 @@ export function Step2Content({
     (e: React.DragEvent) => {
       e.preventDefault();
       e.stopPropagation();
+      setIsDragOver(false);
       addFiles(e.dataTransfer.files);
     },
     [addFiles]
@@ -94,6 +96,16 @@ export function Step2Content({
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only clear when leaving the container (not moving to a child)
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+    }
   }, []);
 
   const handleBrowse = useCallback(() => {
@@ -131,10 +143,14 @@ export function Step2Content({
 
         {/* Upload zone - dashed border (includes Product Guidelines), full width edge-to-edge */}
           <div
-            className="mt-4 w-full rounded-xl border-2 border-dashed p-0"
-            style={{ borderColor: "#10b981" }}
+            className={`mt-4 w-full rounded-xl border-2 border-dashed p-0 transition-all duration-150 ${
+              isDragOver ? "ring-2 ring-brand-green ring-offset-1" : ""
+            }`}
+            style={{ borderColor: isDragOver ? "#059669" : "#10b981" }}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
+            onDragEnter={handleDragOver}
+            onDragLeave={handleDragLeave}
           >
             <input
               ref={inputRef}
@@ -145,13 +161,21 @@ export function Step2Content({
               onChange={handleInputChange}
             />
 
-            {/* Top drag area - background #F2FAF8 */}
-            <div className="rounded-t-xl p-6" style={{ backgroundColor: "#F2FAF8" }}>
+            {/* Top drag area - background #F2FAF8, stronger tint when dragging over */}
+            <div
+              className="rounded-t-xl p-6 transition-colors duration-150"
+              style={{ backgroundColor: isDragOver ? "#D1FAE5" : "#F2FAF8" }}
+            >
             {files.length === 0 ? (
               <div className="flex items-start gap-6 text-left">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-green/20">
-                  <PlusIcon className="h-5 w-5 text-brand-green" />
-                </div>
+                <button
+                  type="button"
+                  onClick={handleBrowse}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-green/20 text-brand-green transition-colors hover:bg-brand-green/30"
+                  title="Add files"
+                >
+                  <PlusIcon className="h-5 w-5" />
+                </button>
                 <div className="flex flex-col gap-2">
                   <p className="text-sm text-figma-primary">
                     Drag and drop up to 6 photos to share them with the brand, or{" "}
@@ -230,12 +254,15 @@ export function Step2Content({
                 </p>
               </div>
               <div className="flex shrink-0 gap-2">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="h-12 w-12 shrink-0 rounded-lg"
-                    style={{ backgroundColor: "#e5e7eb" }}
-                  />
+                {["product1", "product2", "product3"].map((name) => (
+                  <div key={name} className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/${name}.png`}
+                      alt=""
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
                 ))}
               </div>
             </div>
