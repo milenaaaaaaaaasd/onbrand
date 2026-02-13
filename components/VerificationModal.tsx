@@ -42,7 +42,7 @@ function IconContainer({ children }: { children: React.ReactNode }) {
 }
 
 export function VerificationModal({ onClose }: { onClose: () => void }) {
-  const [selectedStep, setSelectedStep] = useState(2);
+  const [selectedStep, setSelectedStep] = useState(1);
   const [stepsExpanded, setStepsExpanded] = useState(true);
   const [logoError, setLogoError] = useState(false);
   const [orderId, setOrderId] = useState<string>("");
