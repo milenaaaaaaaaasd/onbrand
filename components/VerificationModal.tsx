@@ -13,10 +13,10 @@ const STEPS = [
 ] as const;
 
 const TIMELINE_STEPS = [
-  { title: "Order created", subtitle: "Mon, April 26 3:16 AM", completed: true, icon: "cart" },
-  { title: "In preparation", subtitle: "The brand is preparing the products", completed: true, icon: "cart" },
-  { title: "On its way", subtitle: "The delivery driver is on the way", completed: true, icon: "truck" },
-  { title: "Arrives today", subtitle: "Your package is expected to arrive between 10 and 12 p.m.", current: true, icon: "box" },
+  { title: "Order created", subtitle: "Mon, April 26 3:16 AM", completed: true, iconSrc: "/ordercreated.png" },
+  { title: "In preparation", subtitle: "The brand is preparing the products", completed: true, iconSrc: "/inpreparation.png" },
+  { title: "On its way", subtitle: "The delivery driver is on the way", completed: true, iconSrc: "/onitsway.png" },
+  { title: "Arrives today", subtitle: "Your package is expected to arrive between 10 and 12 p.m.", current: true, iconSrc: "/arrives-today.png" },
 ] as const;
 
 const LOGO_SRC = "/Bloom.png";
@@ -28,27 +28,6 @@ function CartIcon({ className, style }: { className?: string; style?: React.CSSP
       <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M3 6h18" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function TruckIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-      <path d="M1 3h15v13H1z" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M16 8h5l3 3v5h-8V8z" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="5.5" cy="18.5" r="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="18.5" cy="18.5" r="2.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function BoxIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg className={className} style={style} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3.27 6.96L12 12.01l8.73-5.05" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M12 22.08V12" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -66,15 +45,16 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
   const [stepsExpanded, setStepsExpanded] = useState(true);
   const [logoError, setLogoError] = useState(false);
   const [orderId, setOrderId] = useState<string>("");
-  useEffect(() => {
-    setOrderId(String(Math.floor(1000000 + Math.random() * 9000000)));
-  }, []);
+  
   const [step2Files, setStep2Files] = useState<Step2File[]>([]);
   const [step2Message, setStep2Message] = useState("");
   const [step2State, setStep2State] = useState<"upload" | "summary">("upload");
   const [step2CompletedViaExemption] = useState(false);
   const [, setStep3Skipped] = useState(false);
-
+  const [shipmentIconError, setShipmentIconError] = useState(false);
+  useEffect(() => {
+    setOrderId(String(Math.floor(1000000 + Math.random() * 9000000)));
+  }, []);
   const handleFooterCta = () => {
     if (selectedStep === 2 && step2State === "upload" && step2Files.length > 0) {
       setStep2State("summary");
@@ -236,7 +216,17 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
                   {/* Shipment - title and "Arrives today..." on same line */}
                   <div className="flex items-center gap-3">
                     <IconContainer>
-                      <CartIcon className="h-5 w-5 text-brand-green" />
+                      {shipmentIconError ? (
+                        <CartIcon className="h-5 w-5 text-brand-green" />
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src="/shipment.png"
+                          alt=""
+                          className="h-5 w-5 object-contain"
+                          onError={() => setShipmentIconError(true)}
+                        />
+                      )}
                     </IconContainer>
                     <h3 className="text-lg font-bold">
                       <span className="text-figma-primary">Shipment → On its way, </span>
@@ -314,9 +304,12 @@ export function VerificationModal({ onClose }: { onClose: () => void }) {
                           style={isCurrent ? { borderColor: "#10b981" } : undefined}
                         >
                           <IconContainer>
-                            {item.icon === "cart" && <CartIcon style={{ width: 20, height: 20 }} className="text-figma-secondary" />}
-                            {item.icon === "truck" && <TruckIcon style={{ width: 20, height: 20 }} className="text-figma-secondary" />}
-                            {item.icon === "box" && <BoxIcon style={{ width: 20, height: 20 }} className="text-figma-secondary" />}
+                            {/* eslint-disable-next-line @next/next/no-img-element -- local timeline asset */}
+                            <img
+                              src={item.iconSrc}
+                              alt={item.title}
+                              className="h-full w-full object-contain"
+                            />
                           </IconContainer>
                           <div className="min-w-0 flex-1">
                             <p className="font-semibold leading-snug" style={{ color: isCurrent ? "#000000" : undefined }}>
